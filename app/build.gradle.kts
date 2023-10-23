@@ -68,6 +68,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    // In your build.gradle (app module)
+    implementation ("androidx.compose.ui:ui:x.y.z")
+
 
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:2.41")

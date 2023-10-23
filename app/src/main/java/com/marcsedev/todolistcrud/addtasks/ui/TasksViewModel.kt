@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.marcsedev.todolistcrud.addtasks.ui.model.TaskModel
 import javax.inject.Inject
 
 class TasksViewModel @Inject constructor() : ViewModel() {
@@ -20,8 +21,12 @@ class TasksViewModel @Inject constructor() : ViewModel() {
         Log.i("onTask", "doneª!")
     }
 
-    fun onShowDialogclick() {
+    fun onShowDialogClick() {
         _showDialog.value = true
+    }
+
+    fun onCheckBoxSelected(taskModel: TaskModel) {
+
     }
 
 }
