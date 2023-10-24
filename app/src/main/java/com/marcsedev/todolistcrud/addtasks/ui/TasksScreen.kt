@@ -1,12 +1,10 @@
 package com.marcsedev.todolistcrud.addtasks.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,14 +14,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,13 +32,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.marcsedev.todolistcrud.addtasks.ui.model.TaskModel
 
@@ -48,7 +48,18 @@ fun TasksScreen(tasksViewModel: TasksViewModel) {
     val showDialog: Boolean by tasksViewModel.showDialog.observeAsState(false)
 
     Scaffold(
-        //topBar = { MyTopAppBar(drawerState, coroutineScope) },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        "Tasks List",
+                    )
+                },
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Color.LightGray
+                )
+            )
+        },
         //bottomBar = { MyBottomNavigationBar() },
         floatingActionButton = {
             FabDialog(tasksViewModel)
@@ -60,8 +71,8 @@ fun TasksScreen(tasksViewModel: TasksViewModel) {
                 .padding(paddingValues = padding)
         ) {
             AddTasksDialog(
-                showDialog,
-                onDismiss = { tasksViewModel.dialogClose() },
+                show = showDialog,
+                onDismiss = { tasksViewModel.onDialogClose() },
                 onTaskAdded = { tasksViewModel.onTasksCreated(it) })
             TasksList(tasksViewModel)
         }
@@ -70,12 +81,12 @@ fun TasksScreen(tasksViewModel: TasksViewModel) {
 
 @Composable
 fun TasksList(tasksViewModel: TasksViewModel) {
-    val myTasks: List<TaskModel> = emptyList()
+    val myTasks: List<TaskModel> = tasksViewModel.tasks
+
     LazyColumn {
-        items(myTasks) { task ->
+        items(myTasks, key = { it.id }) { task ->
             ItemTask(task, tasksViewModel)
         }
-
     }
 }
 
@@ -92,11 +103,18 @@ fun ItemTask(taskModel: TaskModel, tasksViewModel: TasksViewModel) {
                 .padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = taskModel.task, modifier = Modifier.weight(1f))
+            Text(
+                text = taskModel.task,
+                modifier = Modifier.weight(1f),
+                textDecoration = if (taskModel.selected) TextDecoration.LineThrough else null,
+                style = LocalTextStyle.current.copy(
+                    color = if (taskModel.selected) Color.Gray else MaterialTheme.colorScheme.primary,
+                    fontWeight = if (taskModel.selected) FontWeight.Normal else FontWeight.Bold
+                )
+            )
             Checkbox(
                 checked = taskModel.selected,
                 onCheckedChange = { tasksViewModel.onCheckBoxSelected(taskModel) })
-
         }
     }
 }
@@ -124,28 +142,25 @@ fun AddTasksDialog(show: Boolean, onDismiss: () -> Unit, onTaskAdded: (String) -
             ) {
                 Text(
                     text = "Añade tu tarea",
-                    modifier = Modifier.align(CenterHorizontally),
+                    fontSize = 18.sp,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.size(16.dp))
                 TextField(
                     value = myTask,
                     onValueChange = { myTask = it },
-                    placeholder = { "Añadir DaggerHilt a la app" },
                     singleLine = true,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.size(16.dp))
-                Button(
-                    onClick = {
-                        onTaskAdded(myTask)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Añadir Tarea")
+                Button(onClick = {
+                    onTaskAdded(myTask)
+                    myTask = ""
+                }, modifier = Modifier.fillMaxWidth()) {
+                    Text(text = "Añadir tarea")
                 }
             }
-
         }
     }
 }
