@@ -1,8 +1,10 @@
 package com.marcsedev.todolistcrud.addtasks.data
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-data class TaskEntity (
+@Entity
+data class TaskEntity(
     @PrimaryKey
     val id: Int,
     val task: String,
