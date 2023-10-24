@@ -78,8 +78,8 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.5.1")
 
     //DaggerHilt
-    implementation("com.google.dagger:hilt-android:2.41")
-    kapt("com.google.dagger:hilt-android-compiler:2.41")
+    implementation("com.google.dagger:hilt-android:2.43.2")
+    kapt("com.google.dagger:hilt-android-compiler:2.43.2")
 
     //LiveData
     implementation ("androidx.compose.runtime:runtime-livedata:1.2.1")
