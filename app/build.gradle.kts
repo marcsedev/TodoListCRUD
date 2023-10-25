@@ -83,6 +83,5 @@ dependencies {
 
     //LiveData
     implementation ("androidx.compose.runtime:runtime-livedata:1.2.1")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
 
 }
