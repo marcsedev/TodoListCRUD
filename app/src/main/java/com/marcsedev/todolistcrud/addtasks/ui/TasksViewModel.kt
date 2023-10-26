@@ -1,14 +1,15 @@
 package com.marcsedev.todolistcrud.addtasks.ui
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.marcsedev.todolistcrud.addtasks.domain.AddTaskUseCase
 import com.marcsedev.todolistcrud.addtasks.domain.GetTasksUseCase
-import com.marcsedev.todolistcrud.addtasks.ui.TasksUiState.*
+import com.marcsedev.todolistcrud.addtasks.domain.UpdateTaskUseCase
+import com.marcsedev.todolistcrud.addtasks.ui.TasksUiState.Error
+import com.marcsedev.todolistcrud.addtasks.ui.TasksUiState.Loading
+import com.marcsedev.todolistcrud.addtasks.ui.TasksUiState.Success
 import com.marcsedev.todolistcrud.addtasks.ui.model.TaskModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     private val addTaskUseCase: AddTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
     getTasksUseCase: GetTasksUseCase
 ) : ViewModel() {
 
@@ -49,12 +51,9 @@ class TasksViewModel @Inject constructor(
     }
 
     fun onCheckBoxSelected(taskModel: TaskModel) {
-    //TODO: Actualizar check
-
-    /* val index = _tasks.indexOf(taskModel)
-        _tasks[index] = _tasks[index].let {
-            it.copy(selected = !it.selected)
-        }*/
+        viewModelScope.launch {
+            updateTaskUseCase(taskModel.copy(selected = !taskModel.selected))
+        }
     }
 
     fun onItemRemove(taskModel: TaskModel) {
