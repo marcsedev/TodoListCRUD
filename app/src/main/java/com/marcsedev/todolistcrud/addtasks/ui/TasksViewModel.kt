@@ -59,11 +59,8 @@ class TasksViewModel @Inject constructor(
     }
 
     fun onItemRemove(taskModel: TaskModel) {
-        //TODO: Borrar item
         viewModelScope.launch {
             deleteTaskUseCase(taskModel)
         }
-        /*val task = _tasks.find { it.id == taskModel.id }
-        _tasks.remove(task)*/
     }
 }
